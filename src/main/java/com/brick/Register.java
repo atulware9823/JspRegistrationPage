@@ -1,7 +1,9 @@
 package com.brick;
 import java.sql.*;
 import java.io.IOException;
+import java.io.PrintWriter;
 
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -13,7 +15,7 @@ public class Register extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
+		PrintWriter out = resp.getWriter();
 		String name = req.getParameter("name");
 		String email = req.getParameter("email");
 		String password = req.getParameter("pass");
@@ -40,7 +42,15 @@ public class Register extends HttpServlet {
 			pst.setString(3, password);
 			pst.setString(4, gender);
 			pst.setString(5, city);
-			pst.executeUpdate();
+			int res = pst.executeUpdate();
+			if(res>0) 
+			{
+				resp.setContentType("text/html");
+				out.print("<h2 style='color:green'>Registartion Successfull</h2>");
+				RequestDispatcher rd = req.getRequestDispatcher("/register.jsp");
+				rd.include(req, resp);
+			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
